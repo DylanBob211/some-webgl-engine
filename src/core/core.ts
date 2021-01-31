@@ -4,11 +4,13 @@ import { Resolution, EngineSettings } from './settings';
 import { Camera } from './camera';
 import { Entity } from './entity';
 import { TextureManager } from './textures';
+import { Material } from './materials';
 
 export class Core {
     private canvas: HTMLCanvasElement;
     private mainProgram: Program;
     private testMesh: Mesh;
+    private testMaterial: Material;
     public camera: Camera;
     private entity: Entity;
 
@@ -82,8 +84,13 @@ export class Core {
         this.testMesh = new Mesh('test');
         this.testMesh.createTestMesh();
 
+        this.testMaterial = new Material('test');
+
+        this.testMaterial.setColorMap('crate.png');
+
         this.entity = new Entity('Entity');
         this.entity.setMesh(this.testMesh);
+        this.entity.setMaterial(this.testMaterial);
         this.entity.setScale([1.0, 1.0, 1.0]);
     }
 

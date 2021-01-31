@@ -1,9 +1,11 @@
-import { mat4, quat, quat2, vec3 } from "gl-matrix";
+import { mat4, quat, vec3 } from "gl-matrix";
+import { Material } from "./materials";
 import { Mesh } from "./mesh";
 import { modelMatrix, Program } from "./programs";
 
 export class Entity {
   private mesh: Mesh;
+  private material: Material;
   private position = vec3.create();
   private rotation = quat.create();
   private scale = vec3.create();
@@ -18,9 +20,14 @@ export class Entity {
     this.mesh = mesh;
   }
 
+  setMaterial(material) {
+      this.material = material;
+  }
+
   setPosition(position: vec3) {
     this.position = position;
-    this.calculateModelMatrix()
+    this.calculateModelMatrix();
+    
   }
 
   setScale(scale: vec3) {
@@ -48,6 +55,8 @@ export class Entity {
   }
 
   draw(program: Program) {
+    if (!this.material) return;
+    if (!this.material.draw(program)) return;
     GL.uniformMatrix4fv(program.uniforms[modelMatrix], false, this.modelMatrix);
     program.draw(this.mesh);
   }

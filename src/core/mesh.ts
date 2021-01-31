@@ -3,12 +3,13 @@ import { vec2, vec3 } from "gl-matrix";
 
 export class Mesh {
     renderingMode: number;
-    verticesData: any[] = [];
+
+    verticesData = [];
     verticesBuffer: WebGLBuffer;
 
-    colorData = [];
-    colorBuffer: WebGLBuffer;
-
+    uvData = [];
+    uvBuffer: WebGLBuffer;
+    
     indicesData = [];
     indicesBuffer: WebGLBuffer;
 
@@ -29,15 +30,15 @@ export class Mesh {
         this.verticesData.pushVec3D(v2);
         this.verticesData.pushVec3D(v3);
 
-        const c0 = vec3.fromValues(1.0, 0.0, 0.0);
-        const c1 = vec3.fromValues(0.0, 1.0, 0.0);
-        const c2 = vec3.fromValues(0.0, 0.0, 1.0);
-        const c3 = vec3.fromValues(0.0, 1.0, 0.0);
+        const uv0 = vec2.fromValues(0.0, 0.0);
+        const uv1 = vec2.fromValues(1.0, 0.0);
+        const uv2 = vec2.fromValues(1.0, 1.0);
+        const uv3 = vec2.fromValues(0.0, 1.0);
 
-        this.colorData.pushVec3D(c0);
-        this.colorData.pushVec3D(c1);
-        this.colorData.pushVec3D(c2);
-        this.colorData.pushVec3D(c3);
+        this.uvData.pushVec2D(uv0);
+        this.uvData.pushVec2D(uv1);
+        this.uvData.pushVec2D(uv2);
+        this.uvData.pushVec2D(uv3);
 
         this.indicesData.push(0, 1, 2, 0, 2, 3);
 
@@ -57,12 +58,13 @@ export class Mesh {
             GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(this.verticesData), GL.STATIC_DRAW);
         }
 
-        if (this.colorData.length) {
-            this.colorBuffer = GL.createBuffer();
+        if (this.uvData.length) {
+            this.uvBuffer = GL.createBuffer();
 
-            GL.bindBuffer(GL.ARRAY_BUFFER, this.colorBuffer);
-            GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(this.colorData), GL.STATIC_DRAW);
+            GL.bindBuffer(GL.ARRAY_BUFFER, this.uvBuffer);
+            GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(this.uvData), GL.STATIC_DRAW);
         }
+
 
         if (this.indicesData.length) {
             this.indicesBuffer = GL.createBuffer();

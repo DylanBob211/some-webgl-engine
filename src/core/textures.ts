@@ -18,7 +18,7 @@ export class Texture2D {
         this.filename = filename;
         this.texture = GL.createTexture();
         const imageObj = new Image();
-        imageObj.src = 'assets/textures' + filename;
+        imageObj.src = 'assets/textures/' + filename;
         imageObj.onload = () => {
             GL.bindTexture(GL.TEXTURE_2D, this.texture);
             GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.REPEAT);
@@ -43,6 +43,12 @@ export class Texture2D {
 
     isReady(): boolean {
         return this.readyState === TextureReadyState.READY;
+    }
+
+    bind(uniform: WebGLUniformLocation, location: number) {
+        GL.activeTexture(GL.TEXTURE0 + location);
+        GL.bindTexture(GL.TEXTURE_2D, this.texture);
+        GL.uniform1i(uniform, location);
     }
 }
 

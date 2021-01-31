@@ -9,19 +9,23 @@ import { VERTEX_SHADER_SRC } from './shaders/vertexShaderSrc';
 
 export const ATTRIBUTES = [
     'vertexPosition',
-    'vertexColor'
+    'vertexUV'
 ];
 
 export const vertexPosition = 0;
-export const vertexColor = 1;
+export const vertexUV = 1;
 
 export const UNIFORMS = [
     'projectionMatrix',
-    'modelMatrix'
+    'modelMatrix',
+    'baseColor',
+    'colorMap'
 ];
 
 export const projectionMatrix = 0;
 export const modelMatrix = 1;
+export const baseColor = 2;
+export const colorMap = 3;
 
 function makeShader(shaderType: number, shaderSource: string): WebGLShader {
     const shader = GL.createShader(shaderType);
@@ -65,11 +69,10 @@ export class Program {
                 GL.enableVertexAttribArray(attr);
             }
         });
-        this.uniforms.forEach((uniform) => {
-            if (uniform !== null) {
-                GL.uniformMatrix4fv(uniform, false, Engine.camera.projectionMatrix)
-            }
-        })
+
+        if (this.uniforms[projectionMatrix]) {
+            GL.uniformMatrix4fv(this.uniforms[projectionMatrix], false, Engine.camera.projectionMatrix)
+        }
     }
 
     disable() {
@@ -93,17 +96,18 @@ export class Program {
             );
         }
 
-        if (this.attributes[vertexColor] !== -1 && mesh.colorBuffer !== null) {
-            GL.bindBuffer(GL.ARRAY_BUFFER, mesh.colorBuffer);
+        if (this.attributes[vertexUV] !== -1 && mesh.uvBuffer !== null) {
+            GL.bindBuffer(GL.ARRAY_BUFFER, mesh.uvBuffer);
             GL.vertexAttribPointer(
-                this.attributes[vertexColor],
-                3,
+                this.attributes[vertexUV],
+                2, 
                 GL.FLOAT,
                 false,
                 0,
                 0
-            )
+            );
         }
+
 
         if (mesh.indicesBuffer !== null) {
             GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, mesh.indicesBuffer);
